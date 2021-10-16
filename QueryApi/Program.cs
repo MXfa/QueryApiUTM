@@ -23,4 +23,16 @@ namespace QueryApi
                     webBuilder.UseStartup<Startup>();
                 });
     }
+
+// Nombre de la escuela: Universidad Tecnologica Metropolitana
+// Asignatura: Aplicaciones Web Orientada a Servicios
+// Nombre del Maestro: Joel Ivan Chuc Uc
+// Nombre de la actividad: Practica 1
+// Nombre del alumno: Crystian Ramirez Cruz
+// Cuatrimestre: 4
+// Grupo:B
+// Parcial:2
+
+
+
 }
