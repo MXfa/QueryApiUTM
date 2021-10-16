@@ -2,7 +2,7 @@ using System.Collections;
 using Microsoft.AspNetCore.Mvc;
 using QueryApi.Repositories;
 using QueryApi.Domain;
-
+//*
 namespace Controllers
 {
     [ApiController]
@@ -18,7 +18,7 @@ namespace Controllers
           return Ok(persons);
         } 
 
-     
+        
         [HttpGet]
         // [Route("EncontrarA")]
       [Route("EncontrarA/{v_name}")]
@@ -210,5 +210,17 @@ namespace Controllers
       }
 
       
+    
+
+
+
+
+
+
+
+
+
+
+
     }
 }

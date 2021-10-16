@@ -27,7 +27,7 @@ namespace QueryApi.Repositories
 {
     public class PersonRepository
     {
-        List<Person> _persons;
+       List<Person> _persons;
 
         public PersonRepository()
         {
@@ -46,6 +46,7 @@ namespace QueryApi.Repositories
             return query;
         }
 
+        
 // para trabajar consultas: primero se declara un metodo y despues se contruye una consulta linq
 
 
@@ -244,6 +245,10 @@ namespace QueryApi.Repositories
             var query = _persons.Where(person => person.Job == job).Skip(skip).Take(take);
             return query;
         }
+
+
+
+
 
 
 
