@@ -71,11 +71,23 @@ namespace QueryApi.Repositories
             return query;
         }
 
+
          public IEnumerable<Person> GetByMaxAge(int Edad)//ok
         {
             var age= Edad;
             var query = _persons.Where(person => person.Age <= age);
             return query;
+        }
+
+  // retornar valores entre un rango
+       public IEnumerable<Person> GetByRangeAge(double min, double max)//ok
+        {
+            var minAge = min;
+            var maxAge = max;
+
+            var query = _persons.Where(person => person.Age >= minAge && person.Age <= maxAge); // && es equivalente a decir ó
+            return query;
+        
         }
 
 
@@ -88,8 +100,9 @@ namespace QueryApi.Repositories
 
         }
 
-        public IEnumerable<string> Getjobs()
+        public IEnumerable<string> Getjobs()//OK
         {
+            
         var query = _persons.Select(person => person.Job).Distinct(); // Distinct hace que el iterador compare en cada instancia del objeto (Person) y devuelve los valores existentes sin que se repitan y los dtos devueltos son de tipo cadena
         return query;
         }
@@ -112,16 +125,7 @@ namespace QueryApi.Repositories
         }
 
 
-        // retornar valores entre un rango
-       public IEnumerable<Person> GetByRangeAge(double min, double max)//ok
-        {
-            var minAge = min;
-            var maxAge = max;
-
-            var query = _persons.Where(person => person.Age >= minAge && person.Age <= maxAge); // && es equivalente a decir ó
-            return query;
-        
-        }
+      
 
           // retornar elementos ordenados
         public IEnumerable<Person> GetPersonOrdered(string puestoaz)//ok

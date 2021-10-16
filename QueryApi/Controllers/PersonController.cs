@@ -47,6 +47,15 @@ namespace Controllers
       return Ok(persons);
       }
 
+        [HttpGet]
+        [Route("Consulta/opuestos/")]
+        public IActionResult O_Job()
+        {
+          var repository = new PersonRepository();
+          var persons = repository.Getjobs();
+          return Ok(persons);
+        } 
+
       [HttpGet]
       [Route("Consulta/puestodiferenteA/{puesto}")]
       public IActionResult GetPuesto(string puesto)
@@ -75,6 +84,8 @@ namespace Controllers
         return Ok(persons);
       }
 
+
+   
 
        [HttpGet] // 
        [Route("Consulta/xRangodeEdad")]
