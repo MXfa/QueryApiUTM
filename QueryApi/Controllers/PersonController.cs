@@ -1,7 +1,13 @@
+using System.ComponentModel.DataAnnotations;
 using System.Collections;
 using Microsoft.AspNetCore.Mvc;
 using QueryApi.Repositories;
-using QueryApi.Domain;
+using QueryApi.Domain.Entities;
+using QueryApi.Domain.Dto.Response;
+using System.Collections.Generic;
+using System.Linq;
+using Domain.Dto.Request;
+
 //*
 namespace Controllers
 {
@@ -10,217 +16,72 @@ namespace Controllers
     public class PersonController : ControllerBase
     {
         [HttpGet]
-        [Route("")]
+    
         public IActionResult GetAll()
         {
           var repository = new PersonRepository();
-          var persons = repository.GetAll();
-          return Ok(persons);
+          var persons = repository.GetById2(); //      |||| /// persons rsguarda el repositorio de persona
+          var response = CreateDtoFromObject(persons);
+          return Ok(response);
+
         } 
 
-        
         [HttpGet]
-        // [Route("EncontrarA")]
-      [Route("EncontrarA/{v_name}")]
-      public IActionResult GetEncontrarPersona(string v_name)
-      {
-         var repository = new PersonRepository();
-          var persons = repository.GetField(v_name);
-          return Ok(persons);
-      }
-
-      [HttpGet]
-      [Route("Consulta/xgenero/{Genero}")]
-      public IActionResult GetGenero(char Genero)
-      {
-      var repository = new PersonRepository();
-      var persons = repository.GetByGender(Genero);
-      return Ok(persons);
-      }
-
-      [HttpGet]
-      [Route("Consulta/xedad/{Edad}")]
-      public IActionResult GetEdad(int Edad)
-      {
-      var repository = new PersonRepository();
-      var persons = repository.GetByMaxAge(Edad);
-      return Ok(persons);
-      }
-
-        [HttpGet]
-        [Route("Consulta/opuestos/")]
-        public IActionResult O_Job()
+       [Route("EncontrarA")]
+        public IActionResult GetByFilter([FromBody]Person person)
         {
           var repository = new PersonRepository();
-          var persons = repository.Getjobs();
-          return Ok(persons);
+         var persona = CreateDtoFromObject(person);
+         var personas = repository.GetByFilter4(person);
+         var respuesta = personas.Select(x=> CreateDtoFromObject(x));
+
+          return Ok(respuesta);
+           //return Ok($"La persona ingresada es {person.FirstName}{person.LastName} y vive en {person.Address.City}");
         } 
 
-      [HttpGet]
-      [Route("Consulta/puestodiferenteA/{puesto}")]
-      public IActionResult GetPuesto(string puesto)
-      {
-        var repository = new PersonRepository();
-        var persons = repository.GetDiferences(puesto);
-        return Ok(persons);
-      }
-    
-      [HttpGet]
-      [Route("Consulta/todoslospuestos/")]
-      public IActionResult Getjobs()
-      {
-          var repository = new PersonRepository();
-          var persons = repository.Getjobs();
-          return Ok(persons);
-      } 
-
-
-       [HttpGet]
-      [Route("Consulta/unnombrexparticula/{particula}")]
-      public IActionResult GetNombreParticula(string particula)
-      {
-        var repository = new PersonRepository();
-        var persons = repository.GEtContains(particula);
-        return Ok(persons);
-      }
-
-
-   
-
-       [HttpGet] // 
-       [Route("Consulta/xRangodeEdad")]
-        public IActionResult GetRangoEdad(double min, double max)
+private Person CreateObjectFromDto(PersonRequest dto)
+{
+   if(dto.Age<= 0 && dto.Gender == null && string.IsNullOrEmpty(dto.City))
+            return null;
+            var person = new Person(
+                Id:0,
+                FirstName:string.Empty,
+                LastName:string.Empty,
+                Email:string.Empty,
+                Gender: dto.Gender,
+                Age: dto.Age,
+                Job: string.Empty,
+                Address: new PersonAddress(
+                    Street : string.Empty,
+                    Number : string.Empty,
+                    ZipCode : string.Empty,
+                    City: dto.City
+                )
+            );
+            return person;
+}
+        private PersonResponDto CreateDtoFromObject(Person personsw)
         {
-          var mn=min;
-          var mx=max;
-          var repository = new PersonRepository();
-          var persons = repository.GetByRangeAge(mn, mx);
-          return Ok(persons);
+            
+            var personDto = new PersonResponDto(
+            Nombre:$"{personsw.FirstName}{personsw.LastName}",   
+            Correo: personsw.Email,
+           
+            //CodigoPostal:personsw?.Address.ZipCode // ? indica que si el valor es diferente de nulo lo aplicque y si no asigne el valor por defecto
+            CodigoPostal:personsw.Address == null ? string.Empty : personsw.Address.City
+
+
+            );
+            
+            return personDto;
+
         }
 
 
-         [HttpGet]
-      [Route("Consulta/PersonasConPuestoAz/{puestoaz}")]
-      public IActionResult GetPersonasPuestoAz(string puestoaz)
-      {
-        var repository = new PersonRepository();
-        var persons = repository.GetPersonOrdered(puestoaz);
-        return Ok(persons);
-      }
 
-
-      [HttpGet]
-      [Route("Consulta/PersonasxEdad/{puestoza}")]
-      public IActionResult GetPersonasPuestoZa(string puestoza)
-      {
-        var repository = new PersonRepository();
-        var persons = repository.GetPersonOrderedDesc(puestoza);
-        return Ok(persons);
-      }
-
-      [HttpGet]
-      [Route("Consulta/CuantosSon/{edadpersona}")]
-      public IActionResult GetCuantosEdad(int edadpersona)
-      {
-
-      var repository = new PersonRepository();
-      var persons = repository.CountPeople(edadpersona);
-      return Ok(persons);
-      }
-
-      [HttpGet]
-      [Route("Consulta/SitrabajaAqui/{empleado}")]
-      public IActionResult GetEmpleado(string empleado)
-      {
-        var repository = new PersonRepository();
-        var persons = repository.ExistPerson(empleado);
-        return Ok(persons);
-      }
-
-
-      [HttpGet]
-      [Route("Consulta/AnyPerson/{apellido}")]
-      public IActionResult GetPersonaApellido(string apellido)
-      {
-        var repository = new PersonRepository();
-        var persons = repository.AnyPerson(apellido);
-        return Ok(persons);
-      }
-    
-   [HttpGet]
-      [Route("Consulta/PersonaxId/{Identificador}")]
-      public IActionResult GetPersonaId(int Identificador) 
-      {
-
-      var repository = new PersonRepository();
-      var persons = repository.GetPerson(Identificador);
-      return Ok(persons);
-      }
-
-      [HttpGet]
-      [Route("Consulta/PersonaxIdRandom")]
-      public IActionResult GetPersonaIdRm()
-      {
-        var repository = new PersonRepository();
-        var persons = repository.GetPerson2();
-        return Ok(persons);
-      }
-
-
-       [HttpGet]
-      [Route("Consulta/PuestosTake/{estepuesto}")]
-      public IActionResult GetPuestosTake(string estepuesto)
-      {
-        var repository = new PersonRepository();
-        var persons = repository.TakePerson0(estepuesto);
-        return Ok(persons);
-      }
-
-      [HttpGet]
-      [Route("Consulta/PersonaxIndicadores")]
-      public IActionResult GetPersonaxIndicadores(int jobtake, string personjob) 
-      {
-
-      var repository = new PersonRepository();
-      var persons = repository.TakeLastPerson(jobtake, personjob);
-      return Ok(persons);
-      }
-
-
-
-
-      [HttpGet]
-      [Route("Consulta/PuestosxIndicadores")]
-      public IActionResult puestoxIndicadores(int skipjob, string jobempleado) 
-      {
-
-      var repository = new PersonRepository();
-      var persons = repository.SkipPerson(skipjob, jobempleado);
-      return Ok(persons);
-      }
-
-      [HttpGet]
-      [Route("Consulta/PuestosEmpxIndicadores")]
-      public IActionResult puestoxIndicadores(string puestoEmp, int skp, int tke) 
-      {
-
-      var repository = new PersonRepository();
-      var persons = repository.SkipTakePerson(puestoEmp, skp, tke);
-      return Ok(persons);
       }
 
       
+
     
-
-
-
-
-
-
-
-
-
-
-
-    }
 }

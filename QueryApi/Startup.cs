@@ -32,6 +32,10 @@ namespace QueryApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "QueryApi", Version = "v1" });
             });
+            services.AddDbContext<cnxContext>
+            (options =>
+                options.UseSqlServer(Configuration.GetConnectionString("cnx"))
+                );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

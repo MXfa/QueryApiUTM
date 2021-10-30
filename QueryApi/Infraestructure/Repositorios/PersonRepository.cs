@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.IO;
-using QueryApi.Domain;
+using QueryApi.Domain.Entities;
 using System.Threading.Tasks;
 
 namespace QueryApi.Repositories
@@ -191,9 +191,18 @@ namespace QueryApi.Repositories
         public Person GetPerson2() //ok
         {
             var generador = new Random(DateTime.Now.Millisecond); // devolvera un registro diferente cada vez que se ejecuta
-            var id= generador.Next(1000);
+            var id = generador.Next(1000);
             var query = _persons.FirstOrDefault(person => person.Id == id);
             return query;   // se retorna la informacion de un objeto y no de un arreglo
+
+        }
+
+        public Person GetById2()
+        {
+            var generador = new Random(DateTime.Now.Millisecond);
+            var id = 1; // generador.Next(1000);
+            var query = _persons.Single(p => p.Id == id);
+            return query;
 
         }
 
@@ -247,6 +256,31 @@ namespace QueryApi.Repositories
         }
 
 
+public IEnumerable<Person> GetByFilter4(Person person)
+{
+    if(person == null)
+    return new List<Person>();
+
+    var query = _persons.Select(x => x);
+    if (!string.IsNullOrEmpty(person.FirstName))
+    query = query.Where(x => x.FirstName.Contains(person.FirstName));
+
+    if (person.Age > 0)
+    query = query.Where(x => x.Age == person.Age);
+
+    
+    if (!string.IsNullOrEmpty(person.Job))
+    query = query.Where(x => x.Job == person.Job);
+
+
+    if (person.Gender != null)
+        query = query.Where(x => x.Gender == person.Gender);
+
+            if (person.Address != null && !string.IsNullOrEmpty(person.Address.City))
+           query = query.Where(x => x.Address.City == person.Address.City);
+    return query;
+
+}
 
 
 
